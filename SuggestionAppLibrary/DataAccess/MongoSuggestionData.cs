@@ -38,4 +38,44 @@ public class MongoSuggestionData
 
         return output.Where(x => x.ApprovedForRelease).ToList();
     }
+
+    public async Task<SuggestionModel> GetSuggestion(string id)
+    {
+        var results = await _suggestions.FindAsync(s => s.Id == id);
+        return results.FirstOrDefault();
+    }
+
+    public async Task<List<SuggestionModel>> GetAllSuggestionsWaitingForApproval()
+    {
+        var output = await GetAllSuggestions();
+        return output.Where(x =>
+               x.ApprovedForRelease == false 
+            && x.Rejected == false).ToList();
+    }
+
+    public async Task UpdateSuggestion(SuggestionModel suggestion)
+    {
+        await _suggestions.ReplaceOneAsync(s => s.Id == suggestion.Id, suggestion);
+        _cache.Remove(CacheName);
+    }
+
+    public async Task UpvoteSuggestion(string suggestionId, string userId)
+    {
+        var client = _db.Client;
+
+        using var session = await client.StartSessionAsync();
+
+        session.StartTransaction();
+
+        try
+        {
+            var db = client.GetDatabase(_db.DbName);
+
+        }
+        catch (Exception ex)
+        {
+            await session.AbortTransactionAsync();
+            throw;
+        }
+    }
 }
