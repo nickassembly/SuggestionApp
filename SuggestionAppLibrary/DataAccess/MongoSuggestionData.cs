@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace SuggestionAppLibrary.DataAccess;
-public class MongoSuggestionData
+public class MongoSuggestionData : ISuggestionData
 {
     private readonly IDbConnection _db;
     private readonly IUserData _userData;
@@ -21,7 +21,7 @@ public class MongoSuggestionData
     {
         var output = _cache.Get<List<SuggestionModel>>(CacheName);
 
-        if(output == null)
+        if (output == null)
         {
             var results = await _suggestions.FindAsync(s => s.Archived == false);
             output = results.ToList();
@@ -49,7 +49,7 @@ public class MongoSuggestionData
     {
         var output = await GetAllSuggestions();
         return output.Where(x =>
-               x.ApprovedForRelease == false 
+               x.ApprovedForRelease == false
             && x.Rejected == false).ToList();
     }
 
@@ -110,6 +110,29 @@ public class MongoSuggestionData
 
     public async Task CreateSuggestion(SuggestionModel suggestion)
     {
+        var client = _db.Client;
 
+        using var session = await client.StartSessionAsync();
+
+        session.StartTransaction();
+
+        try
+        {
+            var db = client.GetDatabase(_db.DbName);
+            var suggestionsInTransaction = db.GetCollection<SuggestionModel>(_db.SuggestionCollectionName);
+            await suggestionsInTransaction.InsertOneAsync(suggestion);
+
+            var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
+            var user = await _userData.GetUser(suggestion.Author.Id);
+            user.AuthoredSuggestions.Add(new BasicSuggestionModel(suggestion));
+            await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+
+            await session.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            await session.AbortTransactionAsync();
+            throw;
+        }
     }
 }
