@@ -1,5 +1,53 @@
 ﻿@page "/Details/{Id}"
+@inject ISuggestionData suggestionData
+@inject NavigationManager navManager
+
+<h1>Suggestion Details</h1>
+
+<div>
+    
+</div>
 
 @code {
-    // #16 1:50
+    // #16: 6.05
+
+    [Parameter]
+    public string Id { get; set; }
+
+    private SuggestionModel suggestion;
+
+    protected override async Task OnInitializedAsync()
+    {
+        suggestion = await suggestionData.GetSuggestion(Id);
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private string GetUpvoteTopText()
+    {
+        if (suggestion.UserVotes?.Count > 0)
+        {
+            return suggestion.UserVotes.Count.ToString("00");
+        }
+        else
+        {
+            return "Click To";
+        }
+    }
+
+    private string GetUpvoteBottomText()
+    {
+        if (suggestion.UserVotes?.Count > 1)
+        {
+            return "Upvotes";
+        }
+        else
+        {
+            return "Upvote";
+        }
+    }
+
 }
