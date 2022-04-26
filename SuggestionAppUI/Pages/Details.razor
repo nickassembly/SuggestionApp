@@ -5,12 +5,52 @@
 <h1>Suggestion Details</h1>
 
 <div>
-    
+    @if (suggestion is not null)
+    {
+        <div>
+            <div>
+                <div>
+                    <div>@GetUpvoteTopText()</div>
+                    <span class="oi oi-caret-top"></span>
+                    <div>@GetUpvoteBottomText()</div>
+                </div>
+                <div>
+                    <div>@suggestion.DateCreated.ToString("MM.dd.yyyy")</div>
+                </div>
+            </div>
+            <div>
+                <div>@suggestion.Suggestion</div>
+                <div>@suggestion.Author.DisplayName</div>
+                <div>@suggestion.Description</div>
+                <div>
+                    @suggestion.Category.CategoryName
+                </div>
+            </div>
+            <div>
+                <button @onclick="ClosePage"></button>
+            </div>
+        </div>
+    }
 </div>
 
-@code {
-    // #16: 6.05
+@if (suggestion?.SuggestionStatus is not null)
+{
+    <div>
+        <div>
+            <div></div>
+            <div>
+                <div>
+                    @suggestion.SuggestionStatus.StatusName
+                </div>
+                <div>
+                    @((MarkupString)suggestion.OwnerNotes)
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
+@code {
     [Parameter]
     public string Id { get; set; }
 
