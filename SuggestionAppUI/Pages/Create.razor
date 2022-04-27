@@ -1,6 +1,32 @@
-﻿<h3>Create</h3>
+﻿@page "/Create"
+@using SuggestionAppUI.Models
+@inject ICategoryData categoryData
+@inject ISuggestionData suggestionData
+@inject IUserData userData
+@inject NavigationManager navManager
+
+
 
 @code {
-// 17: 1:22
+    private CreateSuggestionModel suggestion = new();
+    private List<CategoryModel> categories;
+    private UserModel loggedInUser;
+
+    protected async override Task OnInitializedAsync()
+    {
+        categories = await categoryData.GetAllCategories();
+        // TODO: replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentication("abc-123");
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private async Task CreateSuggestion()
+    {
+        // #17 11:00
+    }
 
 }
