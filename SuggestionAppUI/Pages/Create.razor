@@ -5,9 +5,25 @@
 @inject IUserData userData
 @inject NavigationManager navManager
 
+<h1>Make A Suggestion</h1>
 
+<div>
+    <div>
+        <div>
+            <button @onclick="ClosePage"></button>
+        </div>
+        @if(categories is not null)
+        {
+            
+        }
+        <EditForm Model="suggestion" OnValidSubmit="CreateSuggestion">
+
+        </EditForm>
+    </div>
+</div>
 
 @code {
+    // #17 19:24
     private CreateSuggestionModel suggestion = new();
     private List<CategoryModel> categories;
     private UserModel loggedInUser;
@@ -26,7 +42,21 @@
 
     private async Task CreateSuggestion()
     {
-        // #17 11:00
+        SuggestionModel s = new();
+        s.Suggestion = suggestion.Suggestion;
+        s.Description = suggestion.Description;
+        s.Author = new BasicUserModel(loggedInUser);
+        s.Category = categories.Where(c => c.Id == suggestion.CategoryId).FirstOrDefault();
+
+        if(s.Category is null)
+        {
+            suggestion.CategoryId = "";
+            return;
+        }
+
+        await suggestionData.CreateSuggestion(s);
+        suggestion = new();
+        ClosePage();
     }
 
 }
