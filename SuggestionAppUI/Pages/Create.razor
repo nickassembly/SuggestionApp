@@ -17,13 +17,25 @@
             
         }
         <EditForm Model="suggestion" OnValidSubmit="CreateSuggestion">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label for="suggestion-text">Suggestion</label>
+                <div>Focus on the topic or technology you want to learn about.</div>
+                <InputText id="suggestion-text" @bind-Value="suggestion.Suggestion" />
+            </div>
 
+             <div>
+                <label for="description">Description</label>
+                <div>Briefly describe your suggestion</div>
+                <InputTextArea id="description" @bind-Value="suggestion.Description" />
+            </div>
         </EditForm>
     </div>
 </div>
 
 @code {
-    // #17 19:24
+    // #17 23:30
     private CreateSuggestionModel suggestion = new();
     private List<CategoryModel> categories;
     private UserModel loggedInUser;
