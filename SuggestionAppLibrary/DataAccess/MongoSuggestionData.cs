@@ -9,8 +9,6 @@ public class MongoSuggestionData : ISuggestionData
     private readonly IMongoCollection<SuggestionModel> _suggestions;
     private const string CacheName = "SuggestionData";
 
-    // #18 1:50
-
     public MongoSuggestionData(IDbConnection db, IUserData userData, IMemoryCache cache)
     {
         _db = db;
@@ -29,6 +27,20 @@ public class MongoSuggestionData : ISuggestionData
             output = results.ToList();
 
             _cache.Set(CacheName, output, TimeSpan.FromMinutes(1));
+        }
+
+        return output;
+    }
+
+    public async Task<List<SuggestionModel>> GetUsersSuggestions(string userId)
+    {
+        var output = _cache.Get<List<SuggestionModel>>(userId);
+        if (output is null)
+        {
+            var results = await _suggestions.FindAsync(s => s.Author.Id == userId);
+            output = results.ToList();
+
+            _cache.Set(userId, userId, TimeSpan.FromMinutes(1));
         }
 
         return output;

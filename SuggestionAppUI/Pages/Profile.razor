@@ -1,0 +1,29 @@
+﻿@page "/Profile";
+@inject ISuggestionData suggestionData
+@inject IUserData userData
+@inject NavigationManager navManager
+
+@code {
+    private UserModel loggedInUser;
+    private List<SuggestionModel> submissions;
+    private List<SuggestionModel> approved;
+    private List<SuggestionModel> archived;
+    private List<SuggestionModel> pending;
+    private List<SuggestionModel> rejected;
+
+    protected async override Task OnInitializedAsync()
+    {
+        // TODO: replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentication("abc-123");
+
+        var results = await suggestionData.GetUsersSuggestions(loggedInUser.Id);
+
+        if (loggedInUser is not null && results is not null)
+        {
+            submissions = results.OrderByDescending(s => s.DateCreated).ToList();
+        }
+
+        //#18 12:00
+    }
+
+}
