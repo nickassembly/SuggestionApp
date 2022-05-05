@@ -1,5 +1,21 @@
 ﻿@page "/AdminApproval"
+@inject ISuggestionData suggestionData
+@inject IUserData userData
+@inject NavigationManager navManager
 
 @code {
-    // #19 2:19
+    // #19 5:23
+
+    private List<SuggestionModel> submissions;
+    private SuggestionModel editingModel;
+    private string currentEditingTitle = "";
+    private string editedTitle = "";
+    private string currentEditingDescription = "";
+    private string editedDescription = "";
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
 }
