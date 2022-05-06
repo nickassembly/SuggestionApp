@@ -4,7 +4,7 @@
 @inject NavigationManager navManager
 
 @code {
-    // #19 5:23
+    // #19 6:40
 
     private List<SuggestionModel> submissions;
     private SuggestionModel editingModel;
@@ -13,9 +13,15 @@
     private string currentEditingDescription = "";
     private string editedDescription = "";
 
-    protected override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        submissions = await suggestionData.GetAllSuggestionsWaitingForApproval();
+    }
+
+    private async Task ApprovedSubmission(SuggestionModel submission)
+    {
+        submission.ApprovedForRelease = true;
+        submissions.Remove(submission);
     }
 
 }
