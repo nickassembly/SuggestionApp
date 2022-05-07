@@ -3,8 +3,38 @@
 @inject IUserData userData
 @inject NavigationManager navManager
 
+<h1>Pending Submissions</h1>
+
+<div>
+    <div>@submissions?.Count Submissions</div>
+    <div>
+        <button @onclick="ClosePage"></button>
+    </div>
+</div>
+
+@if (submissions is not null)
+{
+    foreach (var s in submissions)
+    {
+        <div>
+            <div>
+                <button @onclick="(() => ApprovedSubmission(s))">Approve</button>
+                <button @onclick="(() => RejectSubmission(s))">Reject</button>
+            </div>
+            <div>
+                <div>
+                    @if (currentEditingTitle == s.Id)
+                    {
+                        
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
 @code {
-    // #19 6:40
+    // #19 35:15
 
     private List<SuggestionModel> submissions;
     private SuggestionModel editingModel;
@@ -22,6 +52,33 @@
     {
         submission.ApprovedForRelease = true;
         submissions.Remove(submission);
+        await suggestionData.UpdateSuggestion(submission);
     }
 
+    private async Task RejectSubmission(SuggestionModel submission)
+    {
+        submission.Rejected = true;
+        submissions.Remove(submission);
+        await suggestionData.UpdateSuggestion(submission);
+    }
+
+    private void EditTitle(SuggestionModel model)
+    {
+        editingModel = model;
+        editedTitle = model.Suggestion;
+        currentEditingTitle = model.Id;
+        currentEditingDescription = "";
+    }
+
+    private async Task SaveTitle(SuggestionModel model)
+    {
+        currentEditingTitle = string.Empty;
+        model.Suggestion = editedTitle;
+        await suggestionData.UpdateSuggestion(model);
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
 }
