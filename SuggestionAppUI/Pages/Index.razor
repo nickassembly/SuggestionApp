@@ -30,7 +30,7 @@
         {
             <Virtualize Items="@suggestions" Context="s" OverscanCount="10">
                 <div>
-                    <div>
+                    <div @onclick="(() => VoteUp(s))">
                         <div>@GetUpvoteTopText(s)</div>
                         <span class="oi oi-caret-top"></span>
                         <div>@GetUpvoteBottomText(s)</div>
@@ -250,8 +250,31 @@
 
     private async Task VoteUp(SuggestionModel suggestion)
     {
-        // #23 25:00 mayy need to hard code user in Mongo
-        // step through exception when trying to access profile
+        if (loggedInUser is not null)
+        {
+            if(suggestion.Author.Id == loggedInUser.Id)
+            {
+                return;
+            }
+
+            if (suggestion.UserVotes.Add(loggedInUser.Id) == false)
+            {
+                suggestion.UserVotes.Remove(loggedInUser.Id);
+            }
+
+            await suggestionData.UpvoteSuggestion(suggestion.Id, loggedInUser.Id);
+
+            if (isSortedByNew == false)
+            {
+                suggestions = suggestions
+                .OrderByDescending(s => s.UserVotes.Count)
+                .ThenByDescending(s => s.DateCreated).ToList();
+            }
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
     }
 
     private string GetUpvoteTopText(SuggestionModel suggestion)
