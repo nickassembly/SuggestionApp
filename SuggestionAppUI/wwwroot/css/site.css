@@ -5,6 +5,7 @@
 html, body {
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
+    color: white; /*added because of background color*/
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -13,9 +14,14 @@ h1, h2, h3, h4, h5, h6 {
     color: #FFFFFF;
 }
 
-// #24 9:00
 body {
-    background: url(../images/)
+    background: url(../images/SuggestionPageBackground.png) no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+}
+
+h1 {
+    padding-top: 1rem;
 }
 
 h1:focus {

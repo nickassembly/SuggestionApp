@@ -7,9 +7,9 @@
 @inject NavigationManager navManager
 @inject ProtectedSessionStorage sessionStorage
 
-<h1>Training Suggestions</h1>
-<div>
-    <button>Suggest</button>
+<h1 class="page-heading text-uppercase mb-4">Training Suggestions</h1>
+<div class="suggestion-container">
+    <button @onclick="LoadCreatePage">Suggest</button>
 </div>
 
 <div>
@@ -95,6 +95,19 @@
     {
         categories = await categoryData.GetAllCategories();
         statuses = await statusData.GetAllStatuses();
+    }
+
+    // #24 21:00
+    private void LoadCreatePage()
+    {
+        if (loggedInUser is not null)
+        {
+            navManager.NavigateTo("/Create");
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
     }
 
     private async Task LoadAndVerifyUser()
