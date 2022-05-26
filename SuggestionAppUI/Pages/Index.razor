@@ -9,28 +9,28 @@
 
 <h1 class="page-heading text-uppercase mb-4">Training Suggestions</h1>
 <div class="suggestion-container">
-    <button @onclick="LoadCreatePage">Suggest</button>
+    <button @onclick="LoadCreatePage" class="suggest-btn btn btn-outline-light btn-lg text-uppercase">Suggest</button>
 </div>
 
-<div>
-    <div>@suggestions?.Count Suggestions</div>
-    <div>
-        <button @onclick="(() => OrderByNew(true))">New</button>
-        <button @onclick="(() => OrderByNew(false))">Popular</button>
+<div class="row">
+    <div class="suggestions-count col-md-4 text-light mt-2">@suggestions?.Count Suggestions</div>
+    <div class="col-md-4 col-xl-5 btn-group">
+        <button style="color:white;" class="btn btn-order @SortedByNewClass(true)" @onclick="(() => OrderByNew(true))">New</button>
+        <button style="color:white;" class="btn btn-order @SortedByNewClass(false)" @onclick="(() => OrderByNew(false))">Popular</button>
     </div>
-    <div>
-        <input type="text" placeholder="Search" aria-label="Search box"
+    <div class="col-md-4 col-xl-3 search-box">
+        <input type="text" placeholder="Search" aria-label="Search box" class="form-control rounded-control"
                @oninput="((txt) => OnSearchInput((string)txt.Value))" />
     </div>
 </div>
 
-<div>
-    <div>
+<div class="row">
+    <div class="col-md-8 col-xl-9">
         @if (suggestions is not null)
         {
             <Virtualize Items="@suggestions" Context="s" OverscanCount="10">
-                <div>
-                    <div @onclick="(() => VoteUp(s))">
+                <div class="suggestion-entry">
+                    <div class="@GetVoteClass(s)" @onclick="(() => VoteUp(s))">
                         <div>@GetUpvoteTopText(s)</div>
                         <span class="oi oi-caret-top"></span>
                         <div>@GetUpvoteBottomText(s)</div>
@@ -97,7 +97,6 @@
         statuses = await statusData.GetAllStatuses();
     }
 
-    // #24 21:00
     private void LoadCreatePage()
     {
         if (loggedInUser is not null)
@@ -326,4 +325,20 @@
         navManager.NavigateTo($"/Details/{suggestion.Id}");
     }
 
+    private string SortedByNewClass(bool isNew)
+    {
+        if (isNew == isSortedByNew)
+        {
+            return "sort-selected";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private string GetVoteClass(SuggestionModel suggestion)
+    {
+        // #24 32:00
+    }
 }
