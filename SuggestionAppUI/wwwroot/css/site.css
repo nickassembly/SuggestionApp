@@ -14,7 +14,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-    background: url(../images/SuggestionPageBackground.png) no-repeat center center fixed;
+   /* background: url(../images/SuggestionPageBackground.png) no-repeat center center fixed;*/
+    background-color: rgba(159,179,212, .75);
     background-size: cover;
     height: 100%;
 }
@@ -180,4 +181,16 @@ a, .btn-link {
     font-weight: 700;
 }
 
-/*#26 1:00*/
+.suggestion-entry {
+    display: grid;
+    grid-template-columns: 142px 1fr 45px;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+}
+
+.suggestion-entry-no-votes, 
+.suggestion-entry-voted,
+.suggestion-entry-not-voted {
+   /* #26 10:08*/
+}
