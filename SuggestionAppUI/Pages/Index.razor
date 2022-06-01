@@ -95,6 +95,7 @@
     {
         categories = await categoryData.GetAllCategories();
         statuses = await statusData.GetAllStatuses();
+        await LoadAndVerifyUser();
     }
 
     private void LoadCreatePage()
@@ -136,11 +137,11 @@
                 loggedInUser.FirstName = firstName;
             }
 
-            if (lastName.Equals(loggedInUser.LastName) == false)
-            {
-                isDirty = true;
-                loggedInUser.LastName = lastName;
-            }
+            //if (lastName.Equals(loggedInUser.LastName) == false)
+            //{
+            //    isDirty = true;
+            //    loggedInUser.LastName = lastName;
+            //}
 
             if (displayName.Equals(loggedInUser.DisplayName) == false)
             {

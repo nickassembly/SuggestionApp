@@ -179,7 +179,7 @@
     private List<SuggestionModel> archived;
     private List<SuggestionModel> pending;
     private List<SuggestionModel> rejected;
-    
+
     protected async override Task OnInitializedAsync()
     {
         loggedInUser = await authProvider.GetUserFromAuth(userData);
