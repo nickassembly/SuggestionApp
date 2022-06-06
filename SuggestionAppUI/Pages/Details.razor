@@ -22,15 +22,16 @@
                             <div>@suggestion.DateCreated.ToString("MM.dd.yyyy")</div>
                         </div>
                     </div>
-                </div>
-                <div class="suggestion-detail-text">
-                    <div class="fw-bold mb-2 suggestion-detail-suggestion">@suggestion.Suggestion</div>
-                    <div class="mb-2 suggestion-detail-author">@suggestion.Author.DisplayName</div>
-                    <div class="mb-2">@suggestion.Description</div>
-                    <div class="suggestion-entry-text-category">
-                        @suggestion.Category.CategoryName
+                    <div class="suggestion-detail-text">
+                        <div class="fw-bold mb-2 suggestion-detail-suggestion">@suggestion.Suggestion</div>
+                        <div class="mb-2 suggestion-detail-author">@suggestion.Author.DisplayName</div>
+                        <div class="mb-2">@suggestion.Description</div>
+                        <div class="suggestion-entry-text-category">
+                            @suggestion.Category.CategoryName
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-1 close-button-section">
                     <button class="btn btn-close" @onclick="ClosePage"></button>
                 </div>
@@ -146,7 +147,7 @@
 
     private string GetStatusClass()
     {
-         if (suggestion is null | suggestion.SuggestionStatus is null)
+        if (suggestion is null | suggestion.SuggestionStatus is null)
         {
             return "suggestion-detail-status-none";
         }
