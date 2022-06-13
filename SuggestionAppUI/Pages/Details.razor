@@ -1,8 +1,9 @@
 ﻿@page "/Details/{Id}"
-@inject ISuggestionData suggestionData
 @inject NavigationManager navManager
 @inject AuthenticationStateProvider authProvider
 @inject IUserData userData
+@inject ISuggestionData suggestionData
+@inject IStatusData statusData
 
 <h1 class="page-heading text-uppercase mb-4">Suggestion Details</h1>
 
@@ -40,6 +41,8 @@
     </div>
 </div>
 
+<!--#30 27:55-->
+
 @if (suggestion?.SuggestionStatus is not null)
 {
     <div class="row justify-content-center detail-form">
@@ -58,17 +61,53 @@
 }
 
 @code {
-    // #30 16:50
     [Parameter]
     public string Id { get; set; }
 
     private SuggestionModel suggestion;
     private UserModel loggedInUser;
 
+    private List<StatusModel> statuses;
+    private string settingStatus = "";
+    private string urlText = "";
+
     protected override async Task OnInitializedAsync()
     {
         suggestion = await suggestionData.GetSuggestion(Id);
         loggedInUser = await authProvider.GetUserFromAuth(userData);
+        statuses = await statusData.GetAllStatuses();
+    }
+
+    private async Task CompleteSetStatus()
+    {
+        switch (settingStatus)
+        {
+            case "completed":
+                if(string.IsNullOrWhiteSpace(urlText))
+                {
+                    return;
+                }
+                suggestion.SuggestionStatus = statuses.Where(s => s.StatusName.ToLower() == settingStatus.ToLower()).First();
+                suggestion.OwnerNotes = $"You are right, this is an important topic for devs. We created a resourse about it here: <a href='{urlText}' target='_blank'>{urlText}</a>";
+                break;
+            case "watching":
+                suggestion.SuggestionStatus = statuses.Where(s => s.StatusName.ToLower() == settingStatus.ToLower()).First();
+                suggestion.OwnerNotes = $"We noticed the interest, and if more people are interested we may address the topic.";
+                break;
+            case "upcoming":
+                suggestion.SuggestionStatus = statuses.Where(s => s.StatusName.ToLower() == settingStatus.ToLower()).First();
+                suggestion.OwnerNotes = $"We have a resource in the pipeline to address this topic.";
+                break;
+            case "dismissed":
+                suggestion.SuggestionStatus = statuses.Where(s => s.StatusName.ToLower() == settingStatus.ToLower()).First();
+                suggestion.OwnerNotes = $"This doesn't fit within the scope of our requirements.";
+                break;
+            default:
+                return;
+        }
+
+        settingStatus = null;
+        await suggestionData.UpdateSuggestion(suggestion);
     }
 
     private void ClosePage()
